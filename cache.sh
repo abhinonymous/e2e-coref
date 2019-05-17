@@ -18,7 +18,7 @@ train_data="/export/c01/pxia/je2eea/joint_edl/data/train.english.jsonlines"
 
 
 #output
-outdir="/export/c10/asingh/data/coref/bbc_pb2_ep0.50"
+outdir="/export/c10/asingh/data/coref/bbc_pb2_ep0.50/"
 
 
 #Model
