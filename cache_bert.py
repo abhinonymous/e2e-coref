@@ -72,35 +72,6 @@ def cache_dataset(data_path, out_file):
             if doc_num % 10 == 0:
                 print("Cached {} documents in {}".format(doc_num + 1, data_path))
 
-def cache_dataset_del(data_path, out_file):
-    with torch.no_grad():
-        berttokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
-        bertmodel = BertModel.from_pretrained('bert-base-uncased')
-        bertmodel.eval()
-        bertmodel.to(device)
-
-    with open(data_path) as in_file:
-        for doc_num, line in enumerate(in_file):
-            example = json.loads(line)
-            sentences = [["As", "the", "damaged", "``", "USS", "Cole", "\"\"", "is", "being", "returned", "home", "on", "a", "salvage", "ship", ",", "CNN", "has", "learned", "C", "explosive", "was", "used", "to", "bomb", "the", "Navy", "destroyer", "."]]
-            file_key = "ABC"
-            group = out_file.create_group(file_key)
-            for i, sentence in enumerate(sentences):
-                encoder_output_by_layers = []
-                encoder_output_torch = get_bert_embeddings(sentence,berttokenizer,bertmodel) # list of layer outputs
-                for elem in encoder_output_torch:
-                    if params.device == "gpu":
-                        elem_np = elem.cpu().numpy()
-                    else:
-                        elem_np = elem.numpy()
-                    encoder_output_by_layers.append(elem_np)
-                encoder_output = np.transpose(np.asarray(encoder_output_by_layers), (1,2,0)) # num_layer x seq_len x dim -> seq_len x dim x num_layer
-                group[str(i)] = encoder_output
-
-            if doc_num % 10 == 0:
-                print("Cached {} documents in {}".format(doc_num + 1, data_path))
-
-
 def tokenize_data(berttokenizer, list_s1):
     s1 = " ".join(["[CLS]"] + list_s1 + ["[SEP]"])
 
